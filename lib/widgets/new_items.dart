@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:wallpaper_app/utils/snacbar.dart';
 import '../cards/grid_card.dart';
 import '../models/content_model.dart';
@@ -12,10 +11,8 @@ class NewItems extends StatefulWidget {
   State<NewItems> createState() => _NewItemsState();
 }
 
-class _NewItemsState extends State<NewItems> with AutomaticKeepAliveClientMixin {
-
-
-
+class _NewItemsState extends State<NewItems>
+    with AutomaticKeepAliveClientMixin {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ScrollController? controller;
@@ -72,8 +69,6 @@ class _NewItemsState extends State<NewItems> with AutomaticKeepAliveClientMixin 
     super.dispose();
   }
 
-
-
   void _scrollListener() {
     if (!_isLoading) {
       if (controller!.position.pixels == controller!.position.maxScrollExtent) {
@@ -83,47 +78,42 @@ class _NewItemsState extends State<NewItems> with AutomaticKeepAliveClientMixin 
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
-        children: [
-          Expanded(
-            child: StaggeredGridView.countBuilder(
-              crossAxisCount: 4,
-              controller: controller,
-              itemCount: _data.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index < _data.length) {
-                  final ContentModel d = _data[index];
-                  return GridCard(d: d, heroTag: 'new-${d.timestamp}',);
-                }
-                return Center(
-                  child: Opacity(
-                    opacity: _isLoading ? 1.0 : 0.0,
-                    child: const SizedBox(
-                        width: 32.0,
-                        height: 32.0,
-                        child: CupertinoActivityIndicator()),
-                  ),
+      children: [
+        Expanded(
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, mainAxisSpacing: 10, crossAxisSpacing: 10),
+            controller: controller,
+            itemCount: _data.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index < _data.length) {
+                final ContentModel d = _data[index];
+                return GridCard(
+                  d: d,
+                  heroTag: 'new-${d.timestamp}',
                 );
-              },
-              staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 4 : 3),
-              
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              padding: const EdgeInsets.all(15),
-            ),
+              }
+              return Center(
+                child: Opacity(
+                  opacity: _isLoading ? 1.0 : 0.0,
+                  child: const SizedBox(
+                      width: 32.0,
+                      height: 32.0,
+                      child: CupertinoActivityIndicator()),
+                ),
+              );
+            },
+            padding: const EdgeInsets.all(15),
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   @override
   bool get wantKeepAlive => true;
-
-
-
-  
 }

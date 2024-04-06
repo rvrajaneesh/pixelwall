@@ -20,22 +20,19 @@ import '../widgets/drawer.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   //-------admob--------
-  Future initAdmobAd() async{
-    await MobileAds.instance.initialize()
-    .then((value) => context.read<AdsBloc>().loadAdmobInterstitialAd()); 
+  Future initAdmobAd() async {
+    await MobileAds.instance
+        .initialize()
+        .then((value) => context.read<AdsBloc>().loadAdmobInterstitialAd());
   }
-
-
 
   //------fb-------
   // Future initFbAd() async {
@@ -43,22 +40,17 @@ class _HomePageState extends State<HomePage> {
   //   .then((value) => context.read<AdsBloc>().loadFbAd());
   // }
 
-
-
   Future getData() async {
     Future.delayed(const Duration(milliseconds: 0)).then((f) {
       final sb = context.read<SignInBloc>();
       final db = context.read<DataBloc>();
 
-      sb.getUserDatafromSP()
-      .then((value) => db.getData())
-      .then((value) => db.getCategories());
+      sb
+          .getUserDatafromSP()
+          .then((value) => db.getData())
+          .then((value) => db.getCategories());
     });
   }
-
-
-
-
 
   @override
   void initState() {
@@ -66,17 +58,14 @@ class _HomePageState extends State<HomePage> {
     initOnesignal();
     getData();
 
-    initAdmobAd();          //-------admob--------
+    initAdmobAd(); //-------admob--------
     //initFbAd();             //-------fb--------
   }
 
-
-
-  initOnesignal (){
-    OneSignal.shared.setAppId(Config().onesignalAppId);
+  initOnesignal() {
+    // OneSignal.shared.setAppId(Config().onesignalAppId);
+    OneSignal.initialize(Config().onesignalAppId);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,14 +106,31 @@ class _HomePageState extends State<HomePage> {
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.grey[300],
-                                  image: !context.watch<SignInBloc>().isSignedIn || context.watch<SignInBloc>().imageUrl == null || context.watch<SignInBloc>().imageUrl == 'null'
-                                  ? DecorationImage(image: AssetImage(Config().guestAvatar))
-                                  : DecorationImage(image: CachedNetworkImageProvider(context.watch<SignInBloc>().imageUrl!))),
+                                  image: !context
+                                              .watch<SignInBloc>()
+                                              .isSignedIn ||
+                                          context
+                                                  .watch<SignInBloc>()
+                                                  .imageUrl ==
+                                              null ||
+                                          context
+                                                  .watch<SignInBloc>()
+                                                  .imageUrl ==
+                                              'null'
+                                      ? DecorationImage(
+                                          image:
+                                              AssetImage(Config().guestAvatar))
+                                      : DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                              context
+                                                  .watch<SignInBloc>()
+                                                  .imageUrl!))),
                             ),
                             onTap: () {
                               !sb.isSignedIn
                                   ? showGuestUserInfo(context)
-                                  : showUserInfo(context, sb.name, sb.email, sb.imageUrl);
+                                  : showUserInfo(
+                                      context, sb.name, sb.email, sb.imageUrl);
                             },
                           ),
                           const SizedBox(
@@ -143,7 +149,6 @@ class _HomePageState extends State<HomePage> {
                           )
                         ],
                       )),
-                  
                   const FeatureCard(),
                   const Spacer(),
                   Container(
@@ -162,7 +167,8 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const CatagoryPage()));
+                                    builder: (context) =>
+                                        const CatagoryPage()));
                           },
                         ),
                         IconButton(
@@ -182,7 +188,9 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FavouritePage(userUID: context.read<SignInBloc>().uid)));
+                                    builder: (context) => FavouritePage(
+                                        userUID:
+                                            context.read<SignInBloc>().uid)));
                           },
                         )
                       ],

@@ -12,7 +12,6 @@ class CatagoryPage extends StatefulWidget {
 }
 
 class _CatagoryPageState extends State<CatagoryPage> {
-
   @override
   Widget build(BuildContext context) {
     final db = context.watch<DataBloc>();
@@ -36,35 +35,36 @@ class _CatagoryPageState extends State<CatagoryPage> {
         },
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-                  child: Container(
-                    height: 140,
-                    width: w,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                                db.categories[index]['thumbnail']),
-                            fit: BoxFit.cover)),
-                    child: Align(
-                      child: Text(db.categories[index]['name'],
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600)),
-                    ),
+            child: Container(
+              height: 140,
+              width: w,
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                          db.categories[index]['thumbnail']),
+                      fit: BoxFit.cover)),
+              child: Align(
+                child: Text(db.categories[index]['name'],
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600)),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CatagoryItem(
+                    title: db.categories[index]['name'],
+                    selectedCatagory: db.categories[index]['name'],
                   ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CatagoryItem(
-                                  title: db.categories[index]['name'],
-                                  selectedCatagory: db.categories[index]
-                                      ['name'],
-                                )));
-                  },
-                );
+                ),
+              );
+            },
+          );
         },
       ),
     );

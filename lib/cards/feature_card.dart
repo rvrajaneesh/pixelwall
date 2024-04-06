@@ -17,7 +17,6 @@ class FeatureCard extends StatefulWidget {
 }
 
 class _FeatureCardState extends State<FeatureCard> {
-
   int listIndex = 0;
 
   @override
@@ -26,7 +25,6 @@ class _FeatureCardState extends State<FeatureCard> {
     double w = MediaQuery.of(context).size.width;
 
     final db = context.watch<DataBloc>();
-
 
     return Stack(
       children: <Widget>[
@@ -50,88 +48,97 @@ class _FeatureCardState extends State<FeatureCard> {
                           width: MediaQuery.of(context).size.width,
                           margin: const EdgeInsets.symmetric(horizontal: 0),
                           child: InkWell(
-                            child: CachedNetworkImage(
-                              imageUrl: i.imagelUrl!,
-                              imageBuilder: (context, imageProvider) => Hero(
-                                tag: 'featured${i.timestamp}',
-                                child: Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 10, right: 10, top: 10, bottom: 50),
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                            color: Colors.grey[300]!,
-                                            blurRadius: 30,
-                                            offset: const Offset(5, 20))
-                                      ],
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover)),
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 30, bottom: 40),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: <Widget>[
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                Config().hashTag,
-                                                style: const TextStyle(
-                                                    decoration:
-                                                        TextDecoration.none,
-                                                    color: Colors.white,
-                                                    fontSize: 14),
-                                              ),
-                                              Text(
-                                                i.category!,
-                                                style: const TextStyle(
-                                                    decoration:
-                                                        TextDecoration.none,
-                                                    color: Colors.white,
-                                                    fontSize: 25),
-                                              )
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          Icon(
-                                            Icons.favorite,
-                                            size: 25,
-                                            color:
-                                                Colors.white.withOpacity(0.5),
-                                          ),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            i.loves.toString(),
-                                            style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                color: Colors.white
-                                                    .withOpacity(0.7),
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          )
+                              child: CachedNetworkImage(
+                                imageUrl: i.imagelUrl!,
+                                imageBuilder: (context, imageProvider) => Hero(
+                                  tag: 'featured${i.timestamp}',
+                                  child: Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10,
+                                        right: 10,
+                                        top: 10,
+                                        bottom: 50),
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: <BoxShadow>[
+                                          BoxShadow(
+                                              color: Colors.grey[300]!,
+                                              blurRadius: 30,
+                                              offset: const Offset(5, 20))
                                         ],
-                                      )),
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover)),
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 30, bottom: 40),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: <Widget>[
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  Config().hashTag,
+                                                  style: const TextStyle(
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                      color: Colors.white,
+                                                      fontSize: 14),
+                                                ),
+                                                Text(
+                                                  i.category!,
+                                                  style: const TextStyle(
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                      color: Colors.white,
+                                                      fontSize: 25),
+                                                )
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            Icon(
+                                              Icons.favorite,
+                                              size: 25,
+                                              color:
+                                                  Colors.white.withOpacity(0.5),
+                                            ),
+                                            const SizedBox(width: 2),
+                                            Text(
+                                              i.loves.toString(),
+                                              style: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  color: Colors.white
+                                                      .withOpacity(0.7),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                                placeholder: (context, url) =>
+                                    const LoadingWidget(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.error,
+                                  size: 40,
                                 ),
                               ),
-                              placeholder: (context, url) => const LoadingWidget(),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.error,
-                                size: 40,
-                              ),
-                            ),
-                            onTap: ()=> nextScreen(context, DetailsPage(heroTag: 'featured${i.timestamp}', d: i))
-                          ));
+                              onTap: () => nextScreen(
+                                  context,
+                                  DetailsPage(
+                                      heroTag: 'featured${i.timestamp}',
+                                      d: i))));
                     },
                   );
                 }).toList(),
@@ -152,7 +159,7 @@ class _FeatureCardState extends State<FeatureCard> {
             padding: const EdgeInsets.all(12),
             child: DotsIndicator(
               dotsCount: 5,
-              position: listIndex.toDouble(),
+              position: listIndex,
               decorator: DotsDecorator(
                 activeColor: Colors.black,
                 color: Colors.black,

@@ -17,148 +17,147 @@ class FavouritePage extends StatefulWidget {
 }
 
 class _FavouritePageState extends State<FavouritePage> {
-  
-  
-  
-
-
-  Future<List> _getData (List bookmarkedList)async {
+  Future<List> _getData(List bookmarkedList) async {
     debugPrint('main list: ${bookmarkedList.length}]');
 
     List d = [];
-    if(bookmarkedList.length <= 10){
+    if (bookmarkedList.length <= 10) {
       await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: bookmarkedList)
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+          .collection('contents')
+          .where('timestamp', whereIn: bookmarkedList)
+          .get()
+          .then((QuerySnapshot snap) {
+        d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
       });
-
-    }else if(bookmarkedList.length > 10){
-
+    } else if (bookmarkedList.length > 10) {
       int size = 10;
       var chunks = [];
 
-      for(var i = 0; i< bookmarkedList.length; i+= size){    
-        var end = (i+size<bookmarkedList.length)?i+size:bookmarkedList.length;
-        chunks.add(bookmarkedList.sublist(i,end));
+      for (var i = 0; i < bookmarkedList.length; i += size) {
+        var end = (i + size < bookmarkedList.length)
+            ? i + size
+            : bookmarkedList.length;
+        chunks.add(bookmarkedList.sublist(i, end));
       }
 
       await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: chunks[0])
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
-      }).then((value)async{
+          .collection('contents')
+          .where('timestamp', whereIn: chunks[0])
+          .get()
+          .then((QuerySnapshot snap) {
+        d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+      }).then((value) async {
         await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: chunks[1])
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+            .collection('contents')
+            .where('timestamp', whereIn: chunks[1])
+            .get()
+            .then((QuerySnapshot snap) {
+          d.addAll(
+              snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
         });
       });
-
-    }else if(bookmarkedList.length > 20){
-
+    } else if (bookmarkedList.length > 20) {
       int size = 10;
       var chunks = [];
 
-      for(var i = 0; i< bookmarkedList.length; i+= size){    
-        var end = (i+size<bookmarkedList.length)?i+size:bookmarkedList.length;
-        chunks.add(bookmarkedList.sublist(i,end));
+      for (var i = 0; i < bookmarkedList.length; i += size) {
+        var end = (i + size < bookmarkedList.length)
+            ? i + size
+            : bookmarkedList.length;
+        chunks.add(bookmarkedList.sublist(i, end));
       }
 
       await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: chunks[0])
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
-      }).then((value)async{
+          .collection('contents')
+          .where('timestamp', whereIn: chunks[0])
+          .get()
+          .then((QuerySnapshot snap) {
+        d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+      }).then((value) async {
         await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: chunks[1])
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+            .collection('contents')
+            .where('timestamp', whereIn: chunks[1])
+            .get()
+            .then((QuerySnapshot snap) {
+          d.addAll(
+              snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
         });
-      }).then((value)async{
+      }).then((value) async {
         await FirebaseFirestore.instance
-        .collection('contents')
-        .where('timestamp', whereIn: chunks[2])
-        .get()
-        .then((QuerySnapshot snap) {
-          d.addAll(snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
+            .collection('contents')
+            .where('timestamp', whereIn: chunks[2])
+            .get()
+            .then((QuerySnapshot snap) {
+          d.addAll(
+              snap.docs.map((e) => ContentModel.fromFirestore(e)).toList());
         });
       });
-
     }
-    
+
     return d;
-    
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
-
     const String collectionName = 'users';
     const String snapText = 'loved items';
 
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved Items', style: TextStyle(color: Colors.black),)),
-      body: context.read<SignInBloc>().guestUser == true || widget.userUID == null
-      ? const EmptyPage(
-          icon: FontAwesomeIcons.heart,
-          title: 'No wallpapers found.\n Sign in to access this feature',
-        ) 
-      : StreamBuilder(
-          stream: FirebaseFirestore.instance.collection(collectionName).doc(widget.userUID!).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot snap) {
-            if (!snap.hasData) return const CircularProgressIndicator();
-            
-            List bookamrkedList = snap.data[snapText];
-            return FutureBuilder(
-              future: _getData(bookamrkedList),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return const Center(child: CircularProgressIndicator());
-                }else if(!snapshot.hasData){
-                  return const EmptyPage(icon: FontAwesomeIcons.heart,title: 'No wallpapers found',);
-                }else if (snapshot.hasError){
-                  return const Center(child: Text('Error'),);
-                }else{
-                  return _buildList(snapshot);
-                } 
-                  
-              });
-            },
-        
-          ),
+      appBar: AppBar(
+          title: const Text(
+        'Saved Items',
+        style: TextStyle(color: Colors.black),
+      )),
+      body: context.read<SignInBloc>().guestUser == true ||
+              widget.userUID == null
+          ? const EmptyPage(
+              icon: FontAwesomeIcons.heart,
+              title: 'No wallpapers found.\n Sign in to access this feature',
+            )
+          : StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection(collectionName)
+                  .doc(widget.userUID!)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot snap) {
+                if (!snap.hasData) return const CircularProgressIndicator();
+
+                List bookamrkedList = snap.data[snapText];
+                return FutureBuilder(
+                    future: _getData(bookamrkedList),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (!snapshot.hasData) {
+                        return const EmptyPage(
+                          icon: FontAwesomeIcons.heart,
+                          title: 'No wallpapers found',
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      } else {
+                        return _buildList(snapshot);
+                      }
+                    });
+              },
+            ),
     );
   }
 
-
-
   Widget _buildList(snapshot) {
-    return StaggeredGrid.countBuilder(
-      crossAxisCount: 4,
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4, mainAxisSpacing: 10, crossAxisSpacing: 10),
       itemCount: snapshot.data.length,
       itemBuilder: (BuildContext context, int index) {
         final ContentModel d = snapshot.data[index];
-        return GridCard(d: d, heroTag: 'bookmark-${d.timestamp}',);
+        return GridCard(
+          d: d,
+          heroTag: 'bookmark-${d.timestamp}',
+        );
       },
-      staggeredTileBuilder: (int index) => StaggeredTile.count(2, index.isEven ? 4 : 3),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
       padding: const EdgeInsets.all(15),
     );
   }
